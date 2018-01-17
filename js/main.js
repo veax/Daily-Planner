@@ -1,11 +1,17 @@
 $(document).ready(function(){
+	//Add Task Event
 	$('#add-task-form').on('submit', function(e){
 		addTask(e);
 	});
 
+	//Edit Event
+	$('#edit-task-form').on('submit', function(){
+		updateTask();
+	});
+
 	displayTasks();
 
-	//FUnction to dsplay tasks
+	//Function to display tasks
 	function displayTasks(){
 		var taskList = JSON.parse(localStorage.getItem('tasks'));
 
@@ -86,8 +92,42 @@ $(document).ready(function(){
 
 			tasks.push(new_task);
 			localStorage.setItem('tasks', JSON.stringify(tasks));	// localStrorage store only strings by default
-
-			console.log('Task Added');
 		}
 	}
+
+
+
 });
+
+
+// Function for getting single task
+function getTask(){
+	var $_GET = getQueryParams(document.location.search);
+	id = $_GET['id'];
+
+	var taskList = JSON.parse(localStorage.getItem('tasks'));
+
+	for (var i = 0; i < taskList.length; i++){
+		if (taskList[i].id == id){
+			$('#edit-task-form #task_id').val(taskList[i].id);
+			$('#edit-task-form #task').val(taskList[i].task);
+			$('#edit-task-form #priority').val(taskList[i].task_priority);
+			$('#edit-task-form #date').val(taskList[i].task_date);
+			$('#edit-task-form #time').val(taskList[i].task_time);
+		}
+	}
+}
+
+// Function to get HTTP GET Requests
+function getQueryParams(qs){
+	qs = qs.split("+").join(" ");
+	var params = {},
+			tokens,
+			re = /[?&]?([^=]+)=([^&]*)/g;
+
+	while (tokens = re.exec(qs)){
+		params[decodeURIComponent(tokens[1])]
+			 = decodeURIComponent(tokens[2]);
+	}
+	return params;
+}
